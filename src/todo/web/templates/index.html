@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Todo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='todo.css') }}">
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <h1>Today</h1>
+      {% set remaining = todos | rejectattr('is_done') | list | length %}
+      <p class="tally" data-testid="tally">
+        {% if remaining == 0 %}Nothing left to do.
+        {% elif remaining == 1 %}One thing left.
+        {% else %}{{ remaining }} things left.{% endif %}
+      </p>
+    </header>
+
+    {% if message %}
+      <p class="message" role="alert" data-testid="message">{{ message }}</p>
+    {% endif %}
+
+    <form class="compose" method="post" action="{{ url_for('ui.add_todo') }}">
+      <label class="visually-hidden" for="title">What needs doing?</label>
+      <input id="title" name="title" data-testid="new-todo"
+             placeholder="What needs doing?" autocomplete="off" autofocus>
+      <button type="submit" data-testid="add">Add</button>
+    </form>
+
+    {% if todos %}
+      <ul class="ledger" data-testid="todo-list">
+        {% for todo in todos %}
+          <li class="entry {{ 'is-done' if todo.is_done }}"
+              data-testid="todo"
+              data-title="{{ todo.title }}"
+              data-done="{{ 'true' if todo.is_done else 'false' }}">
+            <form method="post" action="{{ url_for('ui.change_todo', todo_id=todo.id) }}">
+              <button class="marker" type="submit" name="action"
+                      value="{{ 'reopen' if todo.is_done else 'complete' }}"
+                      data-testid="{{ 'reopen' if todo.is_done else 'complete' }}"
+                      aria-label="{{ 'Reopen' if todo.is_done else 'Complete' }} {{ todo.title }}">
+                <span aria-hidden="true">{{ '●' if todo.is_done else '○' }}</span>
+              </button>
+              <span class="title" data-testid="todo-title">{{ todo.title }}</span>
+              <button class="discard" type="submit" name="action" value="delete"
+                      data-testid="delete" aria-label="Delete {{ todo.title }}">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </form>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="empty" data-testid="empty">Your list is clear. Add the first thing above.</p>
+    {% endif %}
+  </main>
+</body>
+</html>
