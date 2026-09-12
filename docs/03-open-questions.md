@@ -87,19 +87,27 @@ fidelity for a stable reference was the better deal, but it is a trade.
 
 ---
 
-## 2. The browser layer has never executed
+## 2. The browser layer — now executed, mostly resolved
 
-`tests/acceptance/drivers/ui_driver.py` is written but unproven — the sandbox
-could not download Chromium. It is short and follows the same shape as the
-other two, but treat it as a sketch until it runs.
+**Status: it runs.** `tests/acceptance/drivers/ui_driver.py` was written before
+Chromium could be downloaded in the original build sandbox, and stayed a
+sketch. All 15 specifications now pass through it, headless and headed, on
+Playwright 1.62 / Chromium 151. Set `HEADED=1 SLOWMO=450` to watch it.
 
-Specifically unverified:
+What the three unknowns turned out to be:
 
-- whether `expect_navigation()` around each form submit is the right
-  synchronisation, or whether Playwright's auto-waiting makes it redundant
-- whether `form[action$="/{token}"]` survives Playwright's strict mode
-- whether reading the token back out of the `action` attribute is robust when
-  the route ever gains a query string
+- `expect_navigation()` around each form submit **works**, but Playwright 1.62
+  marks it deprecated. Every action here is a full-page form post, so the wait
+  is not redundant — auto-waiting alone would let the next locator query race
+  the reload. The modern spelling is to wrap the click in
+  `page.expect_navigation()`'s successor or assert on a post-navigation locator;
+  swapping it is cosmetic, not a correctness fix. Left as-is, flagged.
+- `form[action$="/{token}"]` **survives strict mode** — each row's action is
+  unique, so `:has(form[action$="/{id}"])` resolves to exactly one `li`.
+- reading the token out of the `action` attribute is robust for the current
+  routes, which carry no query string. Still latent: if `/todos/<id>` ever
+  grows a `?…`, `rstrip("/").split("/")[-1]` would pick up the query. Parse the
+  path if that day comes.
 
 ---
 

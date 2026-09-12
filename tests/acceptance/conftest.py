@@ -94,8 +94,10 @@ def _ui_dsl(request, app, repository, clock):
     server.start()
     try:
         with playwright.sync_playwright() as p:
+            headed = os.environ.get("HEADED") == "1"
+            slow_mo = float(os.environ.get("SLOWMO", "0"))
             try:
-                browser = p.chromium.launch()
+                browser = p.chromium.launch(headless=not headed, slow_mo=slow_mo)
             except Exception as exc:  # no browser binary on this machine
                 pytest.skip(f"No chromium available: {exc}")
             page = browser.new_page()

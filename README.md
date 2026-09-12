@@ -57,17 +57,24 @@ Without them, that layer skips rather than fails. The other two run regardless.
 
 ## Status
 
-Verified: 51 unit and contract tests, and the 15 specifications across the
-domain and HTTP drivers — 81 test runs, passing in under half a second.
+Verified: 51 unit and contract tests, and the 15 specifications across all
+three drivers — domain, HTTP and browser — for 96 test runs. The two
+in-process layers finish in well under a second; the full suite, browser
+included, in about fifteen seconds.
 
 The specification uses named references (`mondays_milk`, `thursdays_milk`)
 rather than bare titles. `docs/03-open-questions.md` explains why, including
 the version that shipped first and what was wrong with it.
 
-The browser driver is written but was never executed: the sandbox this was
-built in could not download Chromium. Treat `tests/acceptance/drivers/ui_driver.py`
-as unproven code. It is short, and the point it illustrates does not depend on
-it having run.
+The browser driver now runs. It was written before Chromium could be
+downloaded in the original build sandbox and stayed unproven for a while;
+all 15 specifications now pass through it, headless and headed alike, on
+Playwright 1.62 with Chromium 151. Set `HEADED=1` (optionally `SLOWMO=450`)
+to watch it drive the real page:
+
+```bash
+HEADED=1 SLOWMO=450 SPEC_LAYERS=ui pytest tests/acceptance
+```
 
 ## One thing worth knowing before you read the code
 
