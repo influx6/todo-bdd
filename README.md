@@ -85,6 +85,13 @@ share:
 4. `docs/04-browser-synchronisation.md` — navigation waits, WebDriver vs CDP vs
    BiDi, and why the browser driver synchronises the way it does.
 
+Standalone primers — condensed, no-filler explainers of the ideas this project
+is built on:
+
+- `docs/bdd.md` — Behaviour-Driven Development.
+- `docs/ddd.md` — Domain-Driven Design.
+- `docs/acceptance-testing.md` — Acceptance testing and the test pyramid.
+
 ## One thing worth knowing
 
 Writing this caught a real bug. The service checked for a title clash before
