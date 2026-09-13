@@ -1,0 +1,95 @@
+cabal-version:      3.0
+name:               todo-bdd
+version:            1.0.0
+synopsis:           A todo list, specified once and tested three ways — in Haskell.
+description:        One executable specification, run unchanged against the domain
+                    service, the JSON API and a real browser. A faithful port of the
+                    Python todo-bdd project.
+build-type:         Simple
+
+common lang
+  default-language:   GHC2021
+  default-extensions: OverloadedStrings
+                      LambdaCase
+  ghc-options:        -Wall -Wno-name-shadowing -Wno-unused-do-bind
+
+library
+  import:          lang
+  hs-source-dirs:  src
+  exposed-modules: Todo.Domain.Model
+                   Todo.Domain.Ports
+                   Todo.Service
+                   Todo.Adapters.MemoryRepo
+                   Todo.Adapters.SqliteRepo
+                   Todo.Web
+  build-depends:   base
+                 , text
+                 , bytestring
+                 , containers
+                 , time
+                 , uuid
+                 , aeson
+                 , http-types
+                 , scotty
+                 , wai
+                 , warp
+                 , blaze-html
+                 , cookie
+
+  -- sqlite-simple pulls in the persistence adapter
+  build-depends:   sqlite-simple
+
+executable todo-hs
+  import:          lang
+  hs-source-dirs:  app
+  main-is:         Main.hs
+  ghc-options:     -threaded -rtsopts -with-rtsopts=-N
+  build-depends:   base, text, todo-bdd, scotty, sqlite-simple
+
+test-suite spec
+  import:             lang
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test/spec
+  main-is:            Main.hs
+  other-modules:      Todo.ServiceSpec
+                      Todo.RepositoryContractSpec
+  build-tool-depends: hspec-discover:hspec-discover
+  build-depends:      base
+                    , text
+                    , time
+                    , containers
+                    , hspec
+                    , todo-bdd
+                    , sqlite-simple
+
+test-suite acceptance
+  import:          lang
+  type:            exitcode-stdio-1.0
+  hs-source-dirs:  test/acceptance
+  main-is:         Main.hs
+  ghc-options:     -threaded -rtsopts -with-rtsopts=-N
+  other-modules:   Acceptance.Drivers
+                   Acceptance.Dsl
+                   Acceptance.Drivers.Domain
+                   Acceptance.Drivers.Http
+                   Acceptance.Drivers.Ui
+                   Acceptance.Specification
+  build-depends:   base
+                 , text
+                 , bytestring
+                 , containers
+                 , time
+                 , hspec
+                 , HUnit
+                 , todo-bdd
+                 , wai
+                 , warp
+                 , wai-extra
+                 , http-types
+                 , aeson
+                 , webdriver
+                 , monad-logger
+                 , exceptions
+                 , unliftio
+                 , network
+                 , random

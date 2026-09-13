@@ -1,0 +1,12 @@
+packages: .
+
+-- webdriver and a few others lag on their upper base bounds; let the
+-- solver use what ships with GHC 9.10 rather than refuse to build.
+allow-newer:
+  webdriver:base,
+  webdriver:http-client,
+  webdriver:aeson,
+  webdriver:text,
+  webdriver:time,
+  webdriver:network,
+  webdriver:attoparsec
