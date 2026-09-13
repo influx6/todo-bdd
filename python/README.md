@@ -121,7 +121,10 @@ The vocabulary the specification is written in. It has four jobs and no others:
 4. **Synchronisation.** Every observation retries until it matches or a budget
    runs out (`_eventually`). Against the domain driver that costs nothing;
    against a browser it is the difference between a suite people trust and a suite
-   people re-run until it goes green.
+   people re-run until it goes green. This is the auto-retrying "web-first
+   assertion" pattern, factored into the DSL so all three drivers share it. See
+   [`../docs/04-browser-synchronisation.md`](../docs/04-browser-synchronisation.md)
+   for how this relates to Playwright's auto-waiting and `waitUntil` options.
 
 What the DSL must never contain is **logic**. A step may only drive the system
 and report what is observable. The moment it computes an answer rather than

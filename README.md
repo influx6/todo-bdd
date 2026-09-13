@@ -82,6 +82,8 @@ share:
 1. `docs/01-the-conversation.md` — the behaviours, and plain-language DDD + BDD.
 2. `docs/02-the-specification.md` — how the spec, DSL and drivers were derived.
 3. `docs/03-open-questions.md` — the arguments not fully settled.
+4. `docs/04-browser-synchronisation.md` — navigation waits, WebDriver vs CDP vs
+   BiDi, and why the browser driver synchronises the way it does.
 
 ## One thing worth knowing
 

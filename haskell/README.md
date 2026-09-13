@@ -197,7 +197,9 @@ unit test the specification could never have written.
   driver captures the current `<body>` element, clicks, and waits for it to go
   stale — the WebDriver equivalent of Playwright's `expect_navigation`. Without
   it, the next observation races the reload (this was the whole cause of the
-  first, failing, run).
+  first, failing, run). The full discussion — WebDriver vs CDP vs BiDi, why not
+  BiDi here, and `pageLoadStrategy` as an alternative — is in
+  [`../docs/04-browser-synchronisation.md`](../docs/04-browser-synchronisation.md).
 - **Test failures abort via HUnit's `assertFailure`** (`String -> IO a`), so DSL
   bookkeeping (`remember`, `tokenFor`) can fail a test and still be used where a
   value is expected.
